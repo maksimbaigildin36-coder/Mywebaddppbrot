@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Ultimate Casino</title>
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header>
+<div id="nick">Игрок</div>
+<div class="balance">💰 <span id="balance">1000</span></div>
+</header>
+
+<div class="cases">
+<!-- 10 кейсов -->
+<div class="case" onclick="openCase(50,'Бронзовый','⭐')">Бронзовый ⭐ 50</div>
+<div class="case" onclick="openCase(100,'Серебряный','⭐⭐')">Серебряный ⭐⭐ 100</div>
+<div class="case" onclick="openCase(150,'Серебряный+','⭐⭐')">Серебряный+ ⭐⭐ 150</div>
+<div class="case" onclick="openCase(200,'Золотой','⭐⭐⭐')">Золотой ⭐⭐⭐ 200</div>
+<div class="case" onclick="openCase(250,'Золотой+','⭐⭐⭐')">Золотой+ ⭐⭐⭐ 250</div>
+<div class="case" onclick="openCase(300,'Платиновый','⭐⭐⭐⭐')">Платиновый ⭐⭐⭐⭐ 300</div>
+<div class="case" onclick="openCase(350,'Платиновый+','⭐⭐⭐⭐')">Платиновый+ ⭐⭐⭐⭐ 350</div>
+<div class="case" onclick="openCase(400,'Алмазный','⭐⭐⭐⭐⭐')">Алмазный ⭐⭐⭐⭐⭐ 400</div>
+<div class="case" onclick="openCase(500,'Легендарный','⭐⭐⭐⭐⭐')">Легендарный ⭐⭐⭐⭐⭐ 500</div>
+<div class="case" onclick="openCase(600,'Эпический','⭐⭐⭐⭐⭐')">Эпический ⭐⭐⭐⭐⭐ 600</div>
+</div>
+
+<div class="roulette" id="roulette"></div>
+
+<div class="bottom">
+<button onclick="cases()">Кейсы</button>
+<button onclick="profile()">Профиль</button>
+<button onclick="admin()">Админ</button>
+</div>
+
+<script>
+let tg = window.Telegram.WebApp
+tg.expand()
+let balance = 1000
+
+function randomReward(rarity){
+    const rewards = {
+        "⭐":[10,20,30],
+        "⭐⭐":[20,50,70],
+        "⭐⭐⭐":[50,100,120],
+        "⭐⭐⭐⭐":[100,200,250],
+        "⭐⭐⭐⭐⭐":[200,400,500]
+    }
+    return rewards[rarity][Math.floor(Math.random()*rewards[rarity].length)]
+}
+
+function openCase(price,name,rarity){
+    if(balance<price){alert("Недостаточно монет"); return;}
+    balance-=price
+    document.getElementById("balance").innerText=balance
+    tg.sendData("buy:"+price)
+    animateRoll()
+    setTimeout(()=>{
+        let reward = randomReward(rarity)
+        balance += reward
+        document.getElementById("balance").innerText=balance
+        tg.sendData("win:"+reward)
+        tg.sendData("item:"+name+":"+rarity)
+        alert(`🎁 Вы получили ${name} (${rarity})! Монеты: ${reward}`)
+    },2500)
+}
+
+function animateRoll(){
+    const r = document.getElementById("roulette")
+    r.innerHTML=""
+    for(let i=0;i<15;i++){
+        const val = Math.floor(Math.random()*500)
+        let div = document.createElement("div")
+        div.className="roll-item"
+        div.innerText=val
+        r.appendChild(div)
+    }
+    r.scrollLeft = 0
+    let scroll=0
+    const interval = setInterval(()=>{
+        r.scrollLeft+=10
+        scroll+=10
+        if(scroll>r.scrollWidth/2) clearInterval(interval)
+    },15)
+}
+
+function cases(){}
+function profile(){ alert("💰 Баланс: "+balance) }
+
+function admin(){
+    let user = tg.initDataUnsafe.user
+    if(user.username=="ceotinkov"){
+        // Владелец видит инвентарь всех игроков
+        alert("🛠 Админ панель: доступ к инвентарю всех игроков")
+    } else {
+        alert("❌ Доступ запрещен")
+    }
+}
+</script>
+</body>
+</html>
