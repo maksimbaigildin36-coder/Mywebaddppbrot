@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<title>Изумрудный ⭐</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="background">
+  <div class="balance-frame">
+    💰 Баланс: <span id="balance">1000</span> 🪙
+  </div>
+
+  <div class="case-frame">
+    <img src="case4.png" alt="Кейс 4" class="case-img">
+    <button id="buyCaseBtn" onclick="buyCase(500)">Купить кейс за 500 🪙</button>
+    <button id="openCaseBtn" style="display:none;" onclick="openLoot()">Открыть кейс 🎉</button>
+    <div id="lootAnim"></div>
+  </div>
+
+  <button onclick="goBack()">Назад ⬅️</button>
+</div>
+<script src="script.js"></script>
+</body>
+</html>
